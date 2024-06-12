@@ -101,6 +101,15 @@ class TeacherDashboard extends StatelessWidget {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(
+                        child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 50),
+                      child: Text(
+                        "No Course Available \n Please add courses first",
+                        textAlign: TextAlign.center,
+                      ),
+                    ));
                   } else if (snapshot.hasData) {
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,

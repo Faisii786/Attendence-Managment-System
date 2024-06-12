@@ -34,7 +34,16 @@ class _CoursesScreenState extends State<CoursesScreen> {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
+                } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(
+                      child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 50),
+                    child: Text(
+                      "No Course Available \n Please contact our teacher to assign courses",
+                      textAlign: TextAlign.center,
+                    ),
+                  ));
+                } else {
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
@@ -52,8 +61,7 @@ class _CoursesScreenState extends State<CoursesScreen> {
                                   Row(
                                     children: [
                                       Checkbox(
-                                        value: true,
-                                        // selectedCourses.contains(doc.id),
+                                        value: selectedCourses.contains(doc.id),
                                         onChanged: (bool? value) {
                                           setState(() {
                                             if (value == true) {
@@ -78,7 +86,6 @@ class _CoursesScreenState extends State<CoursesScreen> {
                     ),
                   );
                 }
-                return const Text("No Courses Available");
               },
             ),
             const SizedBox(

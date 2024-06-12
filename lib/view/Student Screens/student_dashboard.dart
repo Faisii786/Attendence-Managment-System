@@ -80,6 +80,15 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
+                  } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(
+                        child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 50),
+                      child: Text(
+                        "No record Found ! \n Please Register Courses First",
+                        textAlign: TextAlign.center,
+                      ),
+                    ));
                   } else if (snapshot.hasData) {
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,

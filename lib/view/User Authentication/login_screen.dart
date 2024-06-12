@@ -32,7 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     AuthServices authServices = AuthServices();
 
-    final TextEditingController teacherIDController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
 
