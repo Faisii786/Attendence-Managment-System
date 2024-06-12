@@ -81,9 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Future userLogin() async {
       String email = emailController.text.trim().toLowerCase();
 
-      if (teacherIDController.text.toString().isEmpty) {
-        Get.snackbar('Error', 'Please enter your teacher ID');
-      } else if (email.isEmpty) {
+      if (email.isEmpty) {
         Get.snackbar("Error", "Please enter your email");
         return;
       } else if (!isEmailValid(email)) {
@@ -136,15 +134,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(
                   height: height * 0.05,
-                ),
-                if (widget.role == false)
-                  CustomtextField(
-                    title: 'Teacher ID',
-                    controller: teacherIDController,
-                    prefixicon: const Icon(Icons.person),
-                  ),
-                SizedBox(
-                  height: height * 0.02,
                 ),
                 CustomtextField(
                   title: 'Email',

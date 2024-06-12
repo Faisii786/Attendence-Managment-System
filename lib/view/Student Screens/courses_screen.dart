@@ -52,8 +52,8 @@ class _CoursesScreenState extends State<CoursesScreen> {
                                   Row(
                                     children: [
                                       Checkbox(
-                                        value: true ??
-                                            selectedCourses.contains(doc.id),
+                                        value: true,
+                                        // selectedCourses.contains(doc.id),
                                         onChanged: (bool? value) {
                                           setState(() {
                                             if (value == true) {
