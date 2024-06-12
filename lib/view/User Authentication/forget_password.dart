@@ -61,7 +61,10 @@ class _ForgetPassowrdState extends State<ForgetPassowrd> {
           Get.snackbar('Success',
               'Please check your email for password reset instructions');
 
-          Get.to(() => const LoginScreen(),
+          Get.to(
+              () => const LoginScreen(
+                    role: true,
+                  ),
               transition: Transition.fade,
               duration: const Duration(seconds: 2));
         } else {

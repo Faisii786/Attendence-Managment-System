@@ -1,6 +1,7 @@
 import 'package:attendence_manag_sys/components/courses_container.dart';
 import 'package:attendence_manag_sys/controllers/auth_services.dart';
 import 'package:attendence_manag_sys/view/Teacher%20Screens/add_course_page.dart';
+import 'package:attendence_manag_sys/view/Teacher%20Screens/attendence_page.dart';
 import 'package:attendence_manag_sys/view/Teacher%20Screens/registered_student_page.dart';
 import 'package:attendence_manag_sys/view/User%20Authentication/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,6 +53,16 @@ class TeacherDashboard extends StatelessWidget {
               description: 'All Registered Students',
               onpressed: () {
                 Get.to(() => const RegisteredStudentPage());
+              },
+            ),
+            SizedBox(
+              height: height * 0.02,
+            ),
+            RegisterCoursesContainer(
+              title: 'Mark Attendence',
+              description: 'Mark Student Attendence',
+              onpressed: () {
+                Get.to(() => const AttendencePage());
               },
             ),
             SizedBox(

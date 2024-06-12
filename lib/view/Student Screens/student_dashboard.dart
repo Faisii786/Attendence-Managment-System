@@ -1,6 +1,7 @@
 import 'package:attendence_manag_sys/components/courses_container.dart';
 import 'package:attendence_manag_sys/controllers/auth_services.dart';
 import 'package:attendence_manag_sys/view/User%20Authentication/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,18 +18,17 @@ class StudentDashboard extends StatefulWidget {
 
 class _StudentDashboardState extends State<StudentDashboard> {
   AuthServices authServices = AuthServices();
-
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
-    // final double width = MediaQuery.sizeOf(context).width * 1;
     final double height = MediaQuery.sizeOf(context).height * 1;
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Wellcome'),
+        title: const Text('Welcome'),
         actions: [
           InkWell(
               onTap: () async {
@@ -71,6 +71,42 @@ class _StudentDashboardState extends State<StudentDashboard> {
               Text(
                 "Class room",
                 style: GoogleFonts.poppins(fontSize: 13),
+              ),
+              FutureBuilder<QuerySnapshot>(
+                future:
+                    firebaseFirestore.collection('registered_courses').get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        border: TableBorder.all(),
+                        columns: const [
+                          DataColumn(label: Text('Course')),
+                          DataColumn(label: Text('Program')),
+                          DataColumn(label: Text('Session')),
+                          DataColumn(label: Text('Course Code')),
+                        ],
+                        rows: snapshot.data?.docs.map((doc) {
+                              return DataRow(
+                                cells: [
+                                  DataCell(Text(doc['course'] ?? '')),
+                                  DataCell(Text(doc['program'] ?? '')),
+                                  DataCell(Text(doc['session'] ?? '')),
+                                  DataCell(Text(doc['course_code'] ?? '')),
+                                ],
+                              );
+                            }).toList() ??
+                            [],
+                      ),
+                    );
+                  }
+                  return const Text("No Courses Available");
+                },
               ),
             ],
           ),

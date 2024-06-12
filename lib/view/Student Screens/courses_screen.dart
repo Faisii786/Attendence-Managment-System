@@ -1,6 +1,7 @@
 import 'package:attendence_manag_sys/components/reg_button.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CoursesScreen extends StatefulWidget {
   const CoursesScreen({super.key});
@@ -11,6 +12,7 @@ class CoursesScreen extends StatefulWidget {
 
 class _CoursesScreenState extends State<CoursesScreen> {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  List selectedCourses = [];
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +46,33 @@ class _CoursesScreenState extends State<CoursesScreen> {
                         DataColumn(label: Text('Course Code')),
                       ],
                       rows: snapshot.data?.docs.map((doc) {
-                            return DataRow(cells: [
-                              DataCell(Text(doc['course'] ?? '')),
-                              DataCell(Text(doc['program'] ?? '')),
-                              DataCell(Text(doc['session'] ?? '')),
-                              DataCell(Text(doc['course_code'] ?? '')),
-                            ]);
+                            return DataRow(
+                              cells: [
+                                DataCell(
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: true ??
+                                            selectedCourses.contains(doc.id),
+                                        onChanged: (bool? value) {
+                                          setState(() {
+                                            if (value == true) {
+                                              selectedCourses.add(doc.id);
+                                            } else {
+                                              selectedCourses.remove(doc.id);
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      Text(doc['course'] ?? ''),
+                                    ],
+                                  ),
+                                ),
+                                DataCell(Text(doc['program'] ?? '')),
+                                DataCell(Text(doc['session'] ?? '')),
+                                DataCell(Text(doc['course_code'] ?? '')),
+                              ],
+                            );
                           }).toList() ??
                           [],
                     ),
@@ -61,8 +84,24 @@ class _CoursesScreenState extends State<CoursesScreen> {
             const SizedBox(
               height: 20,
             ),
-            const RegisteredCourseButton(
-              title: 'Registered Courses',
+            RegisteredCourseButton(
+              ontap: () async {
+                for (var courseId in selectedCourses) {
+                  var course = await firebaseFirestore
+                      .collection('courses')
+                      .doc(courseId)
+                      .get();
+                  await firebaseFirestore
+                      .collection('registered_courses')
+                      .add(course.data()!);
+                }
+                Get.snackbar('Success', 'Courses Registered Successfully');
+
+                setState(() {
+                  selectedCourses.clear();
+                });
+              },
+              title: 'Register Courses',
             ),
           ],
         ),
