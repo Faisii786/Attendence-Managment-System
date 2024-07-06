@@ -73,23 +73,31 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 style: GoogleFonts.poppins(fontSize: 13),
               ),
               FutureBuilder<QuerySnapshot>(
-                future:
-                    firebaseFirestore.collection('registered_courses').get(),
+                future: firebaseFirestore
+                    .collection('registered_courses')
+                    .where('student_id',
+                        isEqualTo: firebaseAuth.currentUser!.uid)
+                    .get(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(
+                    return Center(
                         child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 50),
+                      padding: const EdgeInsets.symmetric(vertical: 50),
                       child: Text(
                         "No record Found ! \n Please Register Courses First",
                         textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(fontSize: 15),
                       ),
                     ));
-                  } else if (snapshot.hasData) {
+                  } else {
+                    List registeredCourses = snapshot.data!.docs
+                        .map((doc) => doc.data() as Map<String, dynamic>)
+                        .toList();
+                    registeredCourses = registeredCourses.toSet().toList();
                     return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: DataTable(
@@ -100,21 +108,19 @@ class _StudentDashboardState extends State<StudentDashboard> {
                           DataColumn(label: Text('Session')),
                           DataColumn(label: Text('Course Code')),
                         ],
-                        rows: snapshot.data?.docs.map((doc) {
-                              return DataRow(
-                                cells: [
-                                  DataCell(Text(doc['course'] ?? '')),
-                                  DataCell(Text(doc['program'] ?? '')),
-                                  DataCell(Text(doc['session'] ?? '')),
-                                  DataCell(Text(doc['course_code'] ?? '')),
-                                ],
-                              );
-                            }).toList() ??
-                            [],
+                        rows: registeredCourses.map((course) {
+                          return DataRow(
+                            cells: [
+                              DataCell(Text(course['course'] ?? '')),
+                              DataCell(Text(course['program'] ?? '')),
+                              DataCell(Text(course['session'] ?? '')),
+                              DataCell(Text(course['course_code'] ?? '')),
+                            ],
+                          );
+                        }).toList(),
                       ),
                     );
                   }
-                  return const Text("No Courses Available");
                 },
               ),
             ],

@@ -1,4 +1,4 @@
-import 'package:attendence_manag_sys/view/Student%20Screens/courses_screen.dart';
+import 'package:attendence_manag_sys/view/Student%20Screens/register_courses.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -35,7 +35,7 @@ class RegisterCoursesContainer extends StatelessWidget {
             InkWell(
               onTap: onpressed ??
                   () {
-                    Get.to(() => const CoursesScreen(),
+                    Get.to(() => const RegisterCourses(),
                         duration: const Duration(seconds: 2),
                         transition: Transition.fade);
                   },
